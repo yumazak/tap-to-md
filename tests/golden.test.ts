@@ -4,9 +4,6 @@ import { renderMarkdown } from "../src/renderer/markdown.js";
 
 describe("golden", () => {
   const specOptions = {
-    layout: "spec" as const,
-    includeComments: false,
-    includeRaw: false,
     failOnly: false,
     strict: false,
     help: false,
@@ -17,22 +14,6 @@ describe("golden", () => {
     const tap = await Bun.file("tests/fixtures/failing.tap").text();
     const expected = await Bun.file("tests/golden/failing.md").text();
     const markdown = renderMarkdown(await parseTap(tap), specOptions);
-
-    expect(markdown.trimEnd()).toBe(expected.trimEnd());
-  });
-
-  test("renders summary fixture", async () => {
-    const tap = await Bun.file("tests/fixtures/failing.tap").text();
-    const expected = await Bun.file("tests/golden/summary.md").text();
-    const markdown = renderMarkdown(await parseTap(tap), {
-      layout: "summary",
-      includeComments: specOptions.includeComments,
-      includeRaw: specOptions.includeRaw,
-      failOnly: specOptions.failOnly,
-      strict: specOptions.strict,
-      help: specOptions.help,
-      version: specOptions.version,
-    });
 
     expect(markdown.trimEnd()).toBe(expected.trimEnd());
   });
@@ -73,19 +54,4 @@ describe("golden", () => {
     expect(markdown.trimEnd()).toBe(expected.trimEnd());
   });
 
-  test("renders real vitest --reporter=tap output (summary)", async () => {
-    const tap = await Bun.file("tests/fixtures/vitest-real.tap").text();
-    const expected = await Bun.file("tests/golden/vitest-real-summary.md").text();
-    const markdown = renderMarkdown(await parseTap(tap), {
-      layout: "summary",
-      includeComments: false,
-      includeRaw: false,
-      failOnly: false,
-      strict: false,
-      help: false,
-      version: false,
-    });
-
-    expect(markdown.trimEnd()).toBe(expected.trimEnd());
-  });
 });

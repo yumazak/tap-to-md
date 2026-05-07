@@ -1,6 +1,6 @@
 {
   "name": "tap-to-md",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Convert TAP14 output to Markdown specifications.",
   "type": "module",
   "license": "MIT",

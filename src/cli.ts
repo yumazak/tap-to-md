@@ -21,6 +21,9 @@ async function main(argv: string[]): Promise<number> {
   if (options.strict && document.warnings.length > 0) {
     throw new StrictError(document.warnings.map((warning) => warning.message).join("\n"));
   }
+  for (const warning of document.warnings) {
+    console.error(warning.message);
+  }
   const markdown = renderMarkdown(document, options);
   await writeOutput(markdown, options.output);
   return 0;

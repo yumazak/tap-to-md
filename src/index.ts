@@ -6,7 +6,6 @@ export type {
   BailOut,
   CliOptions,
   Diagnostic,
-  Layout,
   ParserWarning,
   Plan,
   Summary,

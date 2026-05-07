@@ -1,11 +1,6 @@
-export type Layout = "spec" | "summary";
-
 export interface CliOptions {
   input?: string;
   output?: string;
-  layout: Layout;
-  includeComments: boolean;
-  includeRaw: boolean;
   failOnly: boolean;
   strict: boolean;
   maxDiagnostics?: number;

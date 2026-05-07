@@ -3,10 +3,6 @@ import { parseArgs } from "../src/config.js";
 import { CliError } from "../src/errors.js";
 
 describe("parseArgs", () => {
-  test("parses summary layout", () => {
-    expect(parseArgs(["--layout", "summary"]).layout).toBe("summary");
-  });
-
   test("rejects unknown flags", () => {
     expect(() => parseArgs(["--xxx"])).toThrow(CliError);
   });

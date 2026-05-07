@@ -3,9 +3,6 @@ import type { CliOptions, TapDocument } from "../src/ir/types.js";
 import { renderMarkdown } from "../src/renderer/markdown.js";
 
 const options: CliOptions = {
-  layout: "spec",
-  includeComments: false,
-  includeRaw: false,
   failOnly: false,
   strict: false,
   help: false,
