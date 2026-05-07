@@ -80,7 +80,16 @@ function renderTests(document: TapDocument, options: CliOptions): string[] {
   const lines: string[] = [];
   let previousWasLeaf = false;
 
-  for (const test of document.tests) {
+  const sortedTests = [...document.tests].sort((a, b) => {
+    const aIsContainer = a.children.length > 0;
+    const bIsContainer = b.children.length > 0;
+    if (aIsContainer && bIsContainer) {
+      return a.name.localeCompare(b.name);
+    }
+    return 0;
+  });
+
+  for (const test of sortedTests) {
     const block = renderTest(test, options, 0);
     if (block.length === 0) {
       continue;
