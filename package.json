@@ -1,0 +1,51 @@
+{
+  "name": "tap-to-md",
+  "version": "0.1.0",
+  "description": "Convert TAP14 output to Markdown specifications.",
+  "type": "module",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "bin": {
+    "tap-to-md": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "tap",
+    "test-anything-protocol",
+    "markdown",
+    "specification",
+    "cli"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yumazak/tap-to-md.git"
+  },
+  "homepage": "https://github.com/yumazak/tap-to-md#readme",
+  "bugs": {
+    "url": "https://github.com/yumazak/tap-to-md/issues"
+  },
+  "scripts": {
+    "build": "bun build src/cli.ts --target=node --outfile=dist/cli.js --banner=\"#!/usr/bin/env node\" && bun scripts/fix-cli-shebang.ts && bun build src/index.ts --target=node --outfile=dist/index.js && chmod +x dist/cli.js",
+    "test": "bun test",
+    "lint": "oxlint src tests",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "bun run build && bun test && bun run typecheck && bun run lint"
+  },
+  "dependencies": {
+    "mri": "^1.2.0",
+    "tap-parser": "^18.3.4"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "latest",
+    "oxlint": "latest",
+    "typescript": "^5"
+  }
+}

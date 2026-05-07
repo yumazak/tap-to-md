@@ -1,0 +1,94 @@
+import { describe, expect, test } from "bun:test";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+async function runCli(args: string[], stdin?: string) {
+  const proc = Bun.spawn(["bun", "src/cli.ts", ...args], {
+    stdin: stdin === undefined ? "ignore" : "pipe",
+    stdout: "pipe",
+    stderr: "pipe",
+  });
+  if (stdin !== undefined && proc.stdin) {
+    proc.stdin.write(stdin);
+    proc.stdin.end();
+  }
+
+  const [stdout, stderr, exitCode] = await Promise.all([
+    new Response(proc.stdout).text(),
+    new Response(proc.stderr).text(),
+    proc.exited,
+  ]);
+
+  return { stdout, stderr, exitCode };
+}
+
+describe("CLI", () => {
+  test("converts stdin to stdout", async () => {
+    const { stdout, stderr, exitCode } = await runCli(
+      ["--layout", "summary"],
+      "TAP version 14\n1..1\nok 1 - works\n",
+    );
+
+    expect(exitCode).toBe(0);
+    expect(stderr).toBe("");
+    expect(stdout).toContain("合計 1 / 成功 1");
+  });
+
+  test("round-trips input file to output file", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "tap-to-md-"));
+    try {
+      const output = join(dir, "failing.md");
+      const { stdout, stderr, exitCode } = await runCli([
+        "--input",
+        "tests/fixtures/failing.tap",
+        "--output",
+        output,
+      ]);
+
+      expect(exitCode).toBe(0);
+      expect(stdout).toBe("");
+      expect(stderr).toBe("");
+      expect((await Bun.file(output).text()).trimEnd()).toBe(
+        (await Bun.file("tests/golden/failing.md").text()).trimEnd(),
+      );
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("strict exits 2 on parser warning", async () => {
+    const { stderr, exitCode } = await runCli(
+      ["--strict"],
+      "TAP version 14\n1..2\nok 1 - only\n",
+    );
+
+    expect(exitCode).toBe(2);
+    expect(stderr).toContain("incorrect number of tests");
+  });
+
+  test("prints help", async () => {
+    const { stdout, stderr, exitCode } = await runCli(["--help"]);
+
+    expect(exitCode).toBe(0);
+    expect(stderr).toBe("");
+    expect(stdout).toContain("Usage:");
+    expect(stdout).toContain("--input <file>");
+  });
+
+  test("prints version", async () => {
+    const { stdout, stderr, exitCode } = await runCli(["--version"]);
+
+    expect(exitCode).toBe(0);
+    expect(stderr).toBe("");
+    expect(stdout).toBe("tap-to-md 0.1.0\n");
+  });
+
+  test("rejects unknown flags", async () => {
+    const { stdout, stderr, exitCode } = await runCli(["--unknown-flag"]);
+
+    expect(exitCode).toBe(1);
+    expect(stdout).toBe("");
+    expect(stderr).toContain("unknown option: --unknown-flag");
+  });
+});

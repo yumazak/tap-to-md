@@ -1,0 +1,8 @@
+TAP version 14
+1..2
+ok 1 - reads file
+not ok 2 - writes file
+  ---
+  message: permission denied
+  severity: high
+  ...

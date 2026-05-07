@@ -1,0 +1,4 @@
+TAP version 14
+1..2
+ok 1 - opens file
+ok 2 - closes file
