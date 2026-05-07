@@ -36,7 +36,8 @@
     "test": "bun test",
     "lint": "oxlint src tests",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "bun run build && bun test && bun run typecheck && bun run lint"
+    "prepublishOnly": "bun run build && bun test && bun run typecheck && bun run lint",
+    "prepare": "lefthook install || true"
   },
   "dependencies": {
     "mri": "^1.2.0",
@@ -45,6 +46,7 @@
   "devDependencies": {
     "@types/bun": "latest",
     "@types/node": "latest",
+    "lefthook": "^2.1.6",
     "oxlint": "latest",
     "typescript": "^5"
   }
